@@ -42,4 +42,4 @@ ctr = size(histPopCtr);
 
 NHistCtrYr = ctr(2);
 NCountry = ctr(1);
-StartCtrYr = EndHistYear-NHistCtrYr+1;
+StartCtrYr = -NCountry;

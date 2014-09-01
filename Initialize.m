@@ -11,10 +11,10 @@
 clear all
 
 StartYear = 1750;
-StartCtrYr = 1960;
+
 EndHistYear = 2010;
 NHistYear = EndHistYear - StartYear + 1;
-NHistCtrYr = EndHistYear - StartCtrYr + 1;
+
 EndYear = 2100;
 NYear = EndYear - StartYear + 1;
 Year = zeros(NYear,1);
@@ -24,4 +24,3 @@ for t=2:NYear,
 end
 
 NScen = 4;
-NCountry = 209;
