@@ -2,12 +2,13 @@
 %The Climate Framework for Uncertainty, Negotiation and Distribution,
 %version 4.0-matlab-global
 %
-%This script is part of FUND 4.0 MG
+%This script is part of FUND 4.0 MN
 %It initializes variables and sets parameters
 %
-%Richard Tol, 6 August 2014
+%Richard Tol, 1 September 2014
 %This code is protected by the MIT License
 
+%% global
 TFP = zeros(NYear,NScen);
 K = zeros(NYear,NScen);
 Y = zeros(NYear,NScen);
@@ -51,6 +52,7 @@ for t=NHistYear+1:NYear
     end
 end
 
+%% national
 xdPop = histPopCtr(:,NHistCtrYr)./histPopCtr(:,1);
 xdPop = xdPop.^(1/NHistCtrYr);
 PopCtr = zeros(NCountry,NYear,NScen);
@@ -67,6 +69,41 @@ for t=NHistYear+1:NYear
     end
 end
 
+TFPCtr = zeros(NCountry,NYear,NScen);
+KCtr = zeros(NCountry,NYear,NScen);
+YCtr = zeros(NCountry,NYear,NScen);
 
+for t = NHistYear-NHistCtrYr+1:NHistYear,
+    ts = t - NHistYear + NHistCtrYr;
+    for c = 1:NCountry,
+        TFPCtr(c,t,1) = (histGDPCtr(c,ts)/histPopCtr(c,ts))^LabourElast * (Depreciation/SavingsRate)^(1-LabourElast);
+        KCtr(c,t,1) = SavingsRate*histGDPCtr(c,ts)/Depreciation;
+        YCtr(c,t,1) = TFPCtr(c,t,1)*histPopCtr(c,ts)^LabourElast*KCtr(c,t,1)^(1-LabourElast);
+    end
+end
 
+for t = NHistYear-NHistCtrYr+2:NHistYear,
+    ts = t - NHistYear + NHistCtrYr;
+    for c = 1:NCountry,
+        if YCtr(c,t,1) == 0 & YCtr(c,t-1,1) > 0,
+           TFPCtr(c,t,1) = (1+gTFP)*TFPCtr(c,t-1,1); 
+           KCtr(c,t,1) = (1-Depreciation)*KCtr(c,t-1,1) + SavingsRate*YCtr(c,t-1,1);
+           YCtr(c,t,1) = TFPCtr(c,t,1)*histPopCtr(c,ts)^LabourElast*KCtr(c,t,1)^(1-LabourElast);
+        end
+    end
+end
 
+for s=1:NScen,
+    TFPCtr(:,:,s) = TFPCtr(:,:,1);
+end
+
+for t=NHistYear+1:NYear
+    ts = t-NHistYear;
+    for s=1:NScen
+        for c = 1:NCountry
+            TFPCtr(c,t,s) =  (1+SRESdInc(s,ts))*TFPCtr(c,t-1,s);
+        end
+    end
+end
+      
+               

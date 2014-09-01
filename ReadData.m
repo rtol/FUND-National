@@ -31,15 +31,17 @@ historicTemp = csvread('histTemp.csv');
 observedImpact = csvread('TotalImpact.csv');
 
 histPopulation = csvread('histPopulation.csv');   %global population, 1750-2010
-histPopCtr = csvread('histPopCountry.csv');       %national population, 1960-2010
 histGDP = csvread('histGDP.csv');
 histYpC = histGDP./histPopulation;
 histEnergy = csvread('histEnergy.csv');
 histEnInt = histEnergy./histGDP;
 histCO2Int = historicCO2emit./histEnergy;
 
+histPopCtr = csvread('histPopCountry.csv');       %national population, 1960-2010
 ctr = size(histPopCtr);
-
 NHistCtrYr = ctr(2);
 NCountry = ctr(1);
 StartCtrYr = EndHistYear-NHistCtrYr+1;
+clear ctr
+
+histGDPCtr = csvread('histGDPCountry.csv');       %national GDP, 1960-2010, note many missing observations
