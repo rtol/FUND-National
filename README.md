@@ -4,6 +4,8 @@ FUND is the Climate Framework for Uncertainty, Negotiation and Distribution
 
 To run the model, type FUNDnational
 
+September 1: nationalised GDP and TFP projections
+
 August 29: nationalised population data and population projections
 
 August 29: copied global version to national version
