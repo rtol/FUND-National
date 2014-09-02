@@ -5,7 +5,7 @@
 %This script is part of FUND 4.0 MN
 %It reads historic data
 %
-%Richard Tol, 29 August 2014
+%Richard Tol, 2 September 2014
 %This code is protected by the MIT License
 
 historicCO2emit = csvread('histCO2emit.csv');
@@ -45,3 +45,5 @@ StartCtrYr = EndHistYear-NHistCtrYr+1;
 clear ctr
 
 histGDPCtr = csvread('histGDPCountry.csv');       %national GDP, 1960-2010, note many missing observations
+histEnergyCtr = csvread('histEnergyCountry.csv');%national primary energy use, 1960-2010, note many missing observations
+histCO2Ctr = csvread('histCO2Country.csv');        %national carbon dioxide emissions from fossil fuel combustion, 1960-2010, note many missing observations

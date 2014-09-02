@@ -53,12 +53,14 @@ for t=NHistYear+1:NYear
 end
 
 %% national
+
+%population
 xdPop = histPopCtr(:,NHistCtrYr)./histPopCtr(:,1);
 xdPop = xdPop.^(1/NHistCtrYr);
 PopCtr = zeros(NCountry,NYear,NScen);
 
 for s=1:NScen
-    PopCtr(:,211:261,s) = histPopCtr;
+    PopCtr(:,NHistYear-NHistCtrYr+1:NHistYear,s) = histPopCtr;
 end
 
 for t=NHistYear+1:NYear
@@ -69,10 +71,13 @@ for t=NHistYear+1:NYear
     end
 end
 
+%economic output
 TFPCtr = zeros(NCountry,NYear,NScen);
 KCtr = zeros(NCountry,NYear,NScen);
 YCtr = zeros(NCountry,NYear,NScen);
+YpCCtr = zeros(NCountry,NYear,NScen);
 
+%historical values
 for t = NHistYear-NHistCtrYr+1:NHistYear,
     ts = t - NHistYear + NHistCtrYr;
     for c = 1:NCountry,
@@ -82,6 +87,7 @@ for t = NHistYear-NHistCtrYr+1:NHistYear,
     end
 end
 
+%impute missing observations
 for t = NHistYear-NHistCtrYr+2:NHistYear,
     ts = t - NHistYear + NHistCtrYr;
     for c = 1:NCountry,
@@ -93,5 +99,49 @@ for t = NHistYear-NHistCtrYr+2:NHistYear,
     end
 end
 
-      
-               
+YpCCtr = YCtr./PopCtr;
+
+%create scenarios
+for s=1:NScen,
+    TFPCtr(:,:,s) = TFPCtr(:,:,1);
+    KCtr(:,:,s) = KCtr(:,:,1);
+    YCtr(:,:,s) = YCtr(:,:,1);
+end
+
+for t=NHistYear+1:NYear
+    ts = t-NHistYear;
+    for s=1:NScen
+        for c = 1:NCountry
+            TFPCtr(c,t,s) =  (1+SRESdInc(s,ts))*TFPCtr(c,t-1,s);
+        end
+    end
+end
+
+%energy
+EnergyCtr = zeros(NCountry,NYear,NScen);
+
+EnergyCtr(:,NHistYear-NHistCtrYr+1:NHistYear,1) = histEnergyCtr;
+
+for i = 1:5,
+    ti = 5-i;
+    xYpC = YpCCtr(:,NHistYear-ti,1);
+    xEnInt = EnergyCtr(:,NHistYear-ti,1)./YCtr(:,NHistYear-ti,1);
+    xxYpC = xYpC(xEnInt > 0);
+    xxEnInt = xEnInt(xEnInt > 0);
+    xxYpC = log(xxYpC);
+    xxEnInt = log(xxEnInt);
+    xX = [ones(size(xxYpC,1),1) xxYpC];
+    xb = inv(xX'*xX)*xX'*xxEnInt;
+    for c=1:NCountry
+        if xEnInt(c) ==0
+            if EnergyCtr(c,NHistYear-ti-1,1) == 0
+                xEnInt(c) = exp(xb(1) + xb(2)*log(xYpC(c)));
+                EnergyCtr(c,NHistYear-ti,1) = xEnInt(c)*YCtr(c,NHistYear-ti,1);
+            else
+                xEnInt(c) = EnergyCtr(:,NHistYear-ti-1,1)./YCtr(:,NHistYear-ti-1,1);
+                xEnInt(c) = YpC(c,NHiste
+            end
+                
+        end
+    end
+end

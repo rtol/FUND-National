@@ -1,11 +1,11 @@
 %initKaya
 %The Climate Framework for Uncertainty, Negotiation and Distribution,
-%version 4.0-matlab-global
+%version 4.0-matlab-national
 %
 %This script is part of FUND 4.0 MN
 %It initializes variables and sets parameters
 %
-%Richard Tol, 1 September 2014
+%Richard Tol, 2 September 2014
 %This code is protected by the MIT License
 
 %% global
@@ -53,12 +53,14 @@ for t=NHistYear+1:NYear
 end
 
 %% national
+
+%population
 xdPop = histPopCtr(:,NHistCtrYr)./histPopCtr(:,1);
 xdPop = xdPop.^(1/NHistCtrYr);
 PopCtr = zeros(NCountry,NYear,NScen);
 
 for s=1:NScen
-    PopCtr(:,211:261,s) = histPopCtr;
+    PopCtr(:,NHistYear-NHistCtrYr+1:NHistYear,s) = histPopCtr;
 end
 
 for t=NHistYear+1:NYear
@@ -69,10 +71,13 @@ for t=NHistYear+1:NYear
     end
 end
 
+%economic output
 TFPCtr = zeros(NCountry,NYear,NScen);
 KCtr = zeros(NCountry,NYear,NScen);
 YCtr = zeros(NCountry,NYear,NScen);
+YpCCtr = zeros(NCountry,NYear,NScen);
 
+%historical values
 for t = NHistYear-NHistCtrYr+1:NHistYear,
     ts = t - NHistYear + NHistCtrYr;
     for c = 1:NCountry,
@@ -82,6 +87,7 @@ for t = NHistYear-NHistCtrYr+1:NHistYear,
     end
 end
 
+%impute missing observations
 for t = NHistYear-NHistCtrYr+2:NHistYear,
     ts = t - NHistYear + NHistCtrYr;
     for c = 1:NCountry,
@@ -93,8 +99,13 @@ for t = NHistYear-NHistCtrYr+2:NHistYear,
     end
 end
 
+YpCCtr = YCtr./PopCtr;
+
+%create scenarios
 for s=1:NScen,
     TFPCtr(:,:,s) = TFPCtr(:,:,1);
+    KCtr(:,:,s) = KCtr(:,:,1);
+    YCtr(:,:,s) = YCtr(:,:,1);
 end
 
 for t=NHistYear+1:NYear
@@ -105,5 +116,56 @@ for t=NHistYear+1:NYear
         end
     end
 end
-      
-               
+
+%energy
+EnergyCtr = zeros(NCountry,NYear,NScen);
+
+EnergyCtr(:,NHistYear-NHistCtrYr+1:NHistYear,1) = histEnergyCtr;
+
+for i = 1:5,
+    ti = 5-i;
+    xYpC = YpCCtr(:,NHistYear-ti,1);
+    xEnInt = EnergyCtr(:,NHistYear-ti,1)./YCtr(:,NHistYear-ti,1);
+    xxYpC = xYpC(xEnInt > 0);
+    xxEnInt = xEnInt(xEnInt > 0);
+    xxYpC = log(xxYpC);
+    xxEnInt = log(xxEnInt);
+    xX = [ones(size(xxYpC,1),1) xxYpC];
+    xb = inv(xX'*xX)*xX'*xxEnInt;
+    for c=1:NCountry
+        if xEnInt(c) ==0
+            if EnergyCtr(c,NHistYear-ti-1,1) == 0
+                xEnInt(c) = exp(xb(1) + xb(2)*log(xYpC(c)));
+            else
+                xEnInt(c) = EnergyCtr(c,NHistYear-ti-1,1)./YCtr(c,NHistYear-ti-1,1);
+                xEnInt(c) = xEnInt(c)*(1+xb(2)*(YpCCtr(c,NHistYear-ti,1)/YpCCtr(c,NHistYear-ti-1,1)-1));
+            end
+            EnergyCtr(c,NHistYear-ti,1) = xEnInt(c)*YCtr(c,NHistYear-ti,1);    
+        end
+    end
+end
+
+%carbon dioxide
+CO2Ctr = zeros(NCountry,NYear,NScen);
+
+CO2Ctr(:,NHistYear-NHistCtrYr+1:NHistYear,1) = histCO2Ctr;
+
+for i = 1:4,
+    ti = 4-i;
+    xYpC = YpCCtr(:,NHistYear-ti,1);
+    xCO2Int = CO2Ctr(:,NHistYear-ti,1)./EnergyCtr(:,NHistYear-ti,1);
+    xxYpC = xYpC(xCO2Int > 0);
+    xxCO2Int = xEnInt(xCO2Int > 0);
+    xxYpC = log(xxYpC);
+    xxCO2Int = log(xxCO2Int);
+    xX = [ones(size(xxYpC,1),1) xxYpC];
+    xb = inv(xX'*xX)*xX'*xxCO2Int;
+    for c=1:NCountry
+        if xCO2Int(c) ==0
+            xCO2Int(c) = exp(xb(1) + xb(2)*log(xYpC(c)));
+            CO2Ctr(c,NHistYear-ti,1) = xCO2Int(c)*EnergyCtr(c,NHistYear-ti,1);    
+        end
+    end
+end
+
+clear x*
