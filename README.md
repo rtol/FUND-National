@@ -2,7 +2,9 @@ Matlab code for FUND 4.0 MN
 
 FUND is the Climate Framework for Uncertainty, Negotiation and Distribution
 
-To run the model, type FUNDnational
+To run the model, type FUND
+
+September 2: nationalised energy & CO2 data and projections
 
 September 1: nationalised GDP and TFP projections
 
