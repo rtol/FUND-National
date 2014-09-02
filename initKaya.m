@@ -169,3 +169,20 @@ for i = 1:4,
 end
 
 clear x*
+
+%scenarios
+for s=1:NScen,
+    EnergyCtr(:,:,s) = EnergyCtr(:,:,1);
+    CO2Ctr(:,:,s) = CO2Ctr(:,:,1);
+end
+
+EnIntCtr = EnergyCtr./YCtr;
+CO2IntCtr = CO2Ctr./EnergyCtr;
+
+for t=NHistYear+1:NYear
+    ts = t-NHistYear;
+    for s=1:NScen
+        EnIntCtr(:,t,s)= (1+SRESdEnInt(s,ts))*EnIntCtr(:,t-1,s);
+        CO2IntCtr(:,t,s)= (1+SRESdCO2Int(s,ts))*CO2IntCtr(:,t-1,s);
+    end
+end

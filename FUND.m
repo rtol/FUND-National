@@ -4,7 +4,7 @@
 %
 %This script runs FUND 4.0 MN
 %
-%Richard Tol, 29 August 2014
+%Richard Tol, 2 September 2014
 %This code is protected by the MIT License
 
 Initialize
@@ -55,6 +55,9 @@ for t=NHistYear+1:NYear
         [CH4conc(t,s), N2Oconc(t,s), SF6conc(t,s),CFC11conc(t,s),CFC12conc(t,s)] = stepGHG(CH4conc(t-1,s),CH4emit(t-1,s),N2Oconc(t-1,s),N2Oemit(t-1,s),SF6conc(t-1,s),SF6emit(t-1,s),CFC11conc(t-1,s),CFC11emit(t-1,s),CFC12conc(t-1,s),CFC12emit(t-1,s));
         [RadForc(t,s),atmtemp(t,s),oceantemp(t,s),SLR(t,s)] = stepClimate(CO2conc(t,s),CH4conc(t,s),N2Oconc(t,s),SF6conc(t,s),CFC11conc(t,s),CFC12conc(t,s),Semit(t,s),trO3radforc(t,s),atmtemp(t-1,s),oceantemp(t-1,s));
         [K(t,s),Y(t,s),Energy(t,s),CO2emit(t,s)]= stepEconomy(K(t-1,s),Y(t-1,s),TFP(t,s),Population(t,s),EnInt(t,s),CO2Int(t,s));
+        for c=1:NCountry
+             [KCtr(c,t,s),YCtr(c,t,s),EnergyCtr(c,t,s),CO2Ctr(c,t,s)]= stepEconomy(KCtr(c,t-1,s),YCtr(c,t-1,s),TFPCtr(c,t,s),PopCtr(c,t,s),EnIntCtr(c,t,s),CO2IntCtr(c,t,s));
+        end
         impactd(:,t,s) = aggimpact(atmtemp(t,s),imppar,Y(t,s),Population(t,s));
     end
 end
@@ -65,6 +68,9 @@ for t=NHistYear+1:NYear
         [CH4conc(t,s), N2Oconc(t,s), SF6conc(t,s),CFC11conc(t,s),CFC12conc(t,s)] = stepGHG(CH4conc(t-1,s),CH4emit(t-1,s),N2Oconc(t-1,s),N2Oemit(t-1,s),SF6conc(t-1,s),SF6emit(t-1,s),CFC11conc(t-1,s),CFC11emit(t-1,s),CFC12conc(t-1,s),CFC12emit(t-1,s));
         [RadForc(t,s),atmtemp(t,s),oceantemp(t,s),SLR(t,s)] = stepClimate(CO2conc(t,s),CH4conc(t,s),N2Oconc(t,s),SF6conc(t,s),CFC11conc(t,s),CFC12conc(t,s),Semit(t,s),trO3radforc(t,s),atmtemp(t-1,s),oceantemp(t-1,s));
         [K(t,s),Y(t,s),Energy(t,s),CO2emit(t,s)]= stepEconomy(K(t-1,s),Y(t-1,s),TFP(t,s),Population(t,s),EnInt(t,s),CO2Int(t,s));
+        for c=1:NCountry
+             [KCtr(c,t,s),YCtr(c,t,s),EnergyCtr(c,t,s),CO2Ctr(c,t,s)]= stepEconomy(KCtr(c,t-1,s),YCtr(c,t-1,s),TFPCtr(c,t,s),PopCtr(c,t,s),EnIntCtr(c,t,s),CO2IntCtr(c,t,s));
+        end
         impact(:,t,s) = aggimpact(atmtemp(t,s),imppar,Y(t,s),Population(t,s));
     end
 end
