@@ -108,11 +108,16 @@ for s=1:NScen,
     YCtr(:,:,s) = YCtr(:,:,1);
 end
 
+fudgey(1) = 0.84; %these fudge factors ensure that global growth equals aggregate growth
+fudgey(2) = 0.67; %the two diverge because capital deepening is non-linear and favours poor countries
+fudgey(3) = 0.81; %these fudge factors are set by hand at the moment
+fudgey(4) = 0.72; %this will need to change in the future
+
 for t=NHistYear+1:NYear
     ts = t-NHistYear;
     for s=1:NScen
         for c = 1:NCountry
-            TFPCtr(c,t,s) =  (1+SRESdInc(s,ts))*TFPCtr(c,t-1,s);
+            TFPCtr(c,t,s) =  (1+fudgey(s)*SRESdInc(s,ts))*TFPCtr(c,t-1,s);
         end
     end
 end
@@ -179,10 +184,15 @@ end
 EnIntCtr = EnergyCtr./YCtr;
 CO2IntCtr = CO2Ctr./EnergyCtr;
 
+fudgee(1) = 1.18; %these fudge factors ensure that global growth equals aggregate growth
+fudgee(2) = 1.30; %the two diverge because growth is concentrated in energy-intensive economies
+fudgee(3) = 1.11; %these fudge factors are set by hand at the moment
+fudgee(4) = 1.25; %this will need to change in the future
+
 for t=NHistYear+1:NYear
     ts = t-NHistYear;
     for s=1:NScen
-        EnIntCtr(:,t,s)= (1+SRESdEnInt(s,ts))*EnIntCtr(:,t-1,s);
+        EnIntCtr(:,t,s)= (1+fudgee(s)*SRESdEnInt(s,ts))*EnIntCtr(:,t-1,s);
         CO2IntCtr(:,t,s)= (1+SRESdCO2Int(s,ts))*CO2IntCtr(:,t-1,s);
     end
 end

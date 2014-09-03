@@ -46,5 +46,6 @@ clear ctr
 
 histGDPCtr = csvread('histGDPCountry.csv');       %national GDP, 1960-2010, note many missing observations
 histEnergyCtr = csvread('histEnergyCountry.csv');%national primary energy use, 1960-2010, note many missing observations
+histEnergyCtr = histEnergyCtr/1000;
 histCO2Ctr = csvread('histCO2Country.csv');        %national carbon dioxide emissions from fossil fuel combustion, 1960-2010, note many missing observations
 histCO2Ctr = histCO2Ctr*12/44/1000;
