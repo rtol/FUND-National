@@ -13,6 +13,7 @@
 YpC2010 = histYpC(NHistYear);
 
 impact = zeros(NImpact,NYear,NScen);
+impctr = zeros(NImpact,NCountry,NYear,NScen);
 
 
 

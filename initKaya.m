@@ -101,6 +101,8 @@ end
 
 YpCCtr = YCtr./PopCtr;
 
+YpC2010Ctr = squeeze(YpCCtr(:,NHistYear,1));
+
 %create scenarios
 for s=1:NScen,
     TFPCtr(:,:,s) = TFPCtr(:,:,1);

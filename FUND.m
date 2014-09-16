@@ -20,7 +20,7 @@ for t=2:NHistYear
      CFC12conc(t,1) = (1-CFC12life)*CFC12conc(t-1,1) + histCFC12emit(t-1);
      [RadForc(t,1),atmtemp(t,1), oceantemp(t,1),SLR(t,1)] = stepClimate(CO2conc(t,1),CH4conc(t,1),N2Oconc(t,1),SF6conc(t,1),CFC11conc(t,1),CFC12conc(t,1),Semit(t,1),trO3radforc(t,1),atmtemp(t-1,1),oceantemp(t-1,1));
      [K(t,1),Y(t,1),Energy(t,1),CO2emit(t,1)] = stepEconomy(K(t-1,1),Y(t-1,1),TFP(t,1),histPopulation(t),EnInt(t,1),CO2Int(t,1));
-     impact(:,t,1) = aggimpact(atmtemp(t,1),imppar,Y(t,1),Population(t,1));
+     impact(:,t,1) = aggimpact(atmtemp(t,1),imppar,Y(t,1),Population(t,1),YpC2010);
 end
 
 for s=2:NScen
@@ -58,7 +58,7 @@ for t=NHistYear+1:NYear
         for c=1:NCountry
              [KCtr(c,t,s),YCtr(c,t,s),EnergyCtr(c,t,s),CO2Ctr(c,t,s)]= stepEconomy(KCtr(c,t-1,s),YCtr(c,t-1,s),TFPCtr(c,t,s),PopCtr(c,t,s),EnIntCtr(c,t,s),CO2IntCtr(c,t,s));
         end
-        impactd(:,t,s) = aggimpact(atmtemp(t,s),imppar,Y(t,s),Population(t,s));
+        impactd(:,t,s) = aggimpact(atmtemp(t,s),imppar,Y(t,s),Population(t,s),YpC2010);
     end
 end
 
@@ -71,10 +71,21 @@ for t=NHistYear+1:NYear
         for c=1:NCountry
              [KCtr(c,t,s),YCtr(c,t,s),EnergyCtr(c,t,s),CO2Ctr(c,t,s)]= stepEconomy(KCtr(c,t-1,s),YCtr(c,t-1,s),TFPCtr(c,t,s),PopCtr(c,t,s),EnIntCtr(c,t,s),CO2IntCtr(c,t,s));
         end
-        impact(:,t,s) = aggimpact(atmtemp(t,s),imppar,Y(t,s),Population(t,s));
+        impact(:,t,s) = aggimpact(atmtemp(t,s),imppar,Y(t,s),Population(t,s),YpC2010);
+        for c=1:NCountry
+            impctr(:,c,t,s) = aggimpact(atmtemp(t,s),squeeze(ctrimppar(:,c,:)),YCtr(c,t,s),PopCtr(c,t,s),YpC2010Ctr(c));
+        end
     end
 end
 
+for i=1:NImpact,
+    for t=1:NYear,
+        for s=1:NScen,
+            imptot(i,t,s) = impctr(i,:,t,s)*YCtr(:,t,s) / sum(YCtr(:,t,s));
+        end
+    end
+end
+     
 YpC(:,:) = Y(:,:)./Population(:,:);
 
 SocialCostofCarbon;
@@ -86,9 +97,9 @@ subplot(2,6,4), plot(Year,CO2Int(:,1),Year,CO2Int(:,2),Year,CO2Int(:,3),Year,CO2
 subplot(2,6,5), plot(Year,CO2emit(:,1)/1000,Year,CO2emit(:,2)/1000,Year,CO2emit(:,3)/1000,Year,CO2emit(:,4)/1000), xlabel('year'), ylabel('billion tonnes of carbon'), title('Carbon dioxide emissions')
 subplot(2,6,6), plot(Year,CO2conc(:,1),Year,CO2conc(:,2),Year,CO2conc(:,3),Year,CO2conc(:,4)), xlabel('year'), ylabel('parts per million by volume'), title('Carbon dioxide concentration')
 subplot(2,6,7), plot(Year,atmtemp(:,1),Year,atmtemp(:,2),Year,atmtemp(:,3),Year,atmtemp(:,4)), xlabel('year'), ylabel('degree Celsius'), title('Temperature')
-subplot(2,6,8), plot(Year,impact(1,:,1),Year,impact(1,:,2),Year,impact(1,:,3),Year,impact(1,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Tol')
-subplot(2,6,9), plot(Year,impact(2,:,1),Year,impact(2,:,2),Year,impact(2,:,3),Year,impact(2,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Weitzman')
-subplot(2,6,10), plot(Year,impact(3,:,1),Year,impact(3,:,2),Year,impact(3,:,3),Year,impact(3,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Nordhaus')
-subplot(2,6,11), plot(Year,impact(4,:,1),Year,impact(4,:,2),Year,impact(4,:,3),Year,impact(4,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Hope')
-subplot(2,6,12), plot(Year,impact(5,:,1),Year,impact(5,:,2),Year,impact(5,:,3),Year,impact(5,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to van der Ploeg')
+subplot(2,6,8), plot(Year,impact(1,:,1),Year,impact(1,:,2),Year,impact(1,:,3),Year,impact(1,:,4),Year,imptot(1,:,1),Year,imptot(1,:,2),Year,imptot(1,:,3),Year,imptot(1,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Tol')
+subplot(2,6,9), plot(Year,impact(2,:,1),Year,impact(2,:,2),Year,impact(2,:,3),Year,impact(2,:,4),Year,imptot(2,:,1),Year,imptot(2,:,2),Year,imptot(2,:,3),Year,imptot(2,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Weitzman')
+subplot(2,6,10), plot(Year,impact(3,:,1),Year,impact(3,:,2),Year,impact(3,:,3),Year,impact(3,:,4),Year,imptot(3,:,1),Year,imptot(3,:,2),Year,imptot(3,:,3),Year,imptot(3,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Nordhaus')
+subplot(2,6,11), plot(Year,impact(4,:,1),Year,impact(4,:,2),Year,impact(4,:,3),Year,impact(4,:,4),Year,imptot(4,:,1),Year,imptot(4,:,2),Year,imptot(4,:,3),Year,imptot(4,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Hope')
+subplot(2,6,12), plot(Year,impact(5,:,1),Year,impact(5,:,2),Year,impact(5,:,3),Year,impact(5,:,4),Year,imptot(5,:,1),Year,imptot(5,:,2),Year,imptot(5,:,3),Year,imptot(5,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to van der Ploeg')
 
