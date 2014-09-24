@@ -1,30 +1,42 @@
 %SocialCostofCarbon
 %The Climate Framework for Uncertainty, Negotiation and Distribution,
-%version 4.0-matlab-global
+%version 4.0-matlab-national
 %
-%This script is part of FUND 4.0 MG
+%This script is part of FUND 4.0 MN
 %It computes the social cost of carbon
 %
-%Richard Tol, 6 August 2014
+%Richard Tol, 24 September 2014
 %This code is protected by the MIT License
 
 dimpact = impactd - impact;
+dimpctr = impctrd - impctr;
 
 for i=1:NImpact,
     dimpabs(i,:,:) = squeeze(dimpact(i,:,:)).*Y;
+    dimpabsctr(i,:,:,:) = squeeze(dimpctr(i,:,:,:)).*YCtr;
 end
 
+dimpabsctr(isnan(dimpabsctr)) = 0;
+
 gy = zeros(NYear,NScen);
+gyc = zeros(NCountry,NYear,NScen);
 for t=2:NYear,
     for s=1:NScen,
         gy(t,s) = (YpC(t,s)-YpC(t-1,s))/YpC(t-1,s);
+        for c=1:NCountry,
+            gyc(c,t,s) = (YpCCtr(c,t,s)-YpCCtr(c,t-1,s))/YpCCtr(c,t-1,s);
+        end
     end
 end
 
 gp = zeros(NYear,NScen);
+gpc = zeros(NCountry,NYear,NScen);
 for t=2:NYear,
     for s=1:NScen,
         gp(t,s) = (Population(t,s)-Population(t-1,s))/Population(t-1,s);
+        for c=1:NCountry,
+            gpc(c,t,s) = (PopCtr(c,t,s)-PopCtr(c,t-1,s))/PopCtr(c,t-1,s);
+        end
     end
 end
 
@@ -34,10 +46,14 @@ NRA = 5;
 RA = [0.5 1.0 1.5 2.0 2.5];
 
 df = zeros(NYear,NScen,NDR,NRA);
+dfc = zeros(NCountry,NYear,NScen,NDR,NRA);
 for s=1:NScen,
     for p=1:NDR,
         for r=1:NRA,
-            df(265,s,p,r)=1;
+            df(265,s,p,r) = 1;
+            for c=1:NCountry
+                dfc(c,265,s,p,r) = 1;
+            end
         end
     end
 end
@@ -47,24 +63,32 @@ for t=266:NYear,
         for p=1:NDR,
             for r=1:NRA
                 df(t,s,p,r) = df(t-1,s,p,r)/(1+PRTP(p)+gp(t-1,s)+RA(r)*gy(t-1,s));
+                for c=1:NCountry
+                    dfc(c,t,s,p,r) = dfc(c,t-1,s,p,r)/(1+PRTP(p)+gpc(c,t-1,s)+RA(r)*gyc(c,t-1,s));
+                end
             end
         end
     end
 end
 
 SCC = zeros(NImpact, NScen, NDR, NRA);
+SCCc = zeros(NImpact, NCountry, NScen, NDR, NRA);
 
 for i=1:NImpact,
     for s=1:NScen,
         for p=1:NDR,
             for r=1:NRA,
                 SCC(i,s,p,r) = squeeze(df(:,s,p,r))'*dimpabs(i,:,s)';
+                for c= 1:NCountry
+                    SCCc(i,c,s,p,r) = dfc(c,:,s,p,r)*squeeze(dimpabsctr(i,c,:,s));
+                end
             end
         end
     end
 end
 
 SCC = -0.01*SCC/1000000;
+SCCc = -0.01*SCCc/1000000;
 
 s = PrintTable;
 s.addRow('Time pref \ Risk aversion', RA(1), RA(2), RA(3), RA(4), RA(5));

@@ -21,6 +21,9 @@ for t=2:NHistYear
      [RadForc(t,1),atmtemp(t,1), oceantemp(t,1),SLR(t,1)] = stepClimate(CO2conc(t,1),CH4conc(t,1),N2Oconc(t,1),SF6conc(t,1),CFC11conc(t,1),CFC12conc(t,1),Semit(t,1),trO3radforc(t,1),atmtemp(t-1,1),oceantemp(t-1,1));
      [K(t,1),Y(t,1),Energy(t,1),CO2emit(t,1)] = stepEconomy(K(t-1,1),Y(t-1,1),TFP(t,1),histPopulation(t),EnInt(t,1),CO2Int(t,1));
      impact(:,t,1) = aggimpact(atmtemp(t,1),imppar,Y(t,1),Population(t,1),YpC2010);
+     for c=1:NCountry
+            impctr(:,c,t,1) = aggimpact(atmtemp(t,1),squeeze(ctrimppar(:,c,:)),YCtr(c,t,1),PopCtr(c,t,1),YpC2010Ctr(c));
+     end
 end
 
 for s=2:NScen
@@ -41,6 +44,7 @@ for s=2:NScen
     Energy(:,s) = Energy(:,1);
     CO2emit(:,s) = CO2emit(:,1);
     impact(:,:,s) = impact(:,:,1);
+    impctr(:,:,:,s) = impctr(:,:,:,1);
 end
 
 impactd = impact;
@@ -59,6 +63,9 @@ for t=NHistYear+1:NYear
              [KCtr(c,t,s),YCtr(c,t,s),EnergyCtr(c,t,s),CO2Ctr(c,t,s)]= stepEconomy(KCtr(c,t-1,s),YCtr(c,t-1,s),TFPCtr(c,t,s),PopCtr(c,t,s),EnIntCtr(c,t,s),CO2IntCtr(c,t,s));
         end
         impactd(:,t,s) = aggimpact(atmtemp(t,s),imppar,Y(t,s),Population(t,s),YpC2010);
+         for c=1:NCountry
+            impctrd(:,c,t,s) = aggimpact(atmtemp(t,s),squeeze(ctrimppar(:,c,:)),YCtr(c,t,s),PopCtr(c,t,s),YpC2010Ctr(c));
+        end
     end
 end
 
@@ -87,6 +94,7 @@ for i=1:NImpact,
 end
      
 YpC(:,:) = Y(:,:)./Population(:,:);
+YpCCtr(:,:,:) = YCtr(:,:,:)./PopCtr(:,:,:);
 
 SocialCostofCarbon;
 
