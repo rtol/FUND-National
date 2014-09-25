@@ -98,16 +98,51 @@ YpCCtr(:,:,:) = YCtr(:,:,:)./PopCtr(:,:,:);
 
 SocialCostofCarbon;
 
-subplot(2,6,1), plot(Year,Population(:,1),Year,Population(:,2),Year,Population(:,3),Year,Population(:,4)), xlabel('year'), ylabel('number of people'), title('Population')
-subplot(2,6,2), plot(Year,YpC(:,1),Year,YpC(:,2),Year,YpC(:,3),Year,YpC(:,4)), xlabel('year'), ylabel('dollar per person per year'), title('Average income')
-subplot(2,6,3), plot(Year,EnInt(:,1)*10^12,Year,EnInt(:,2)*10^12,Year,EnInt(:,3)*10^12,Year,EnInt(:,4)*10^12), xlabel('year'), ylabel('gram oil equivalent per dollar'), title('Energy intensity')
-subplot(2,6,4), plot(Year,CO2Int(:,1),Year,CO2Int(:,2),Year,CO2Int(:,3),Year,CO2Int(:,4)), xlabel('year'), ylabel('gram carbon per gram oil equivalent'), title('Carbon intensity')
-subplot(2,6,5), plot(Year,CO2emit(:,1)/1000,Year,CO2emit(:,2)/1000,Year,CO2emit(:,3)/1000,Year,CO2emit(:,4)/1000), xlabel('year'), ylabel('billion tonnes of carbon'), title('Carbon dioxide emissions')
-subplot(2,6,6), plot(Year,CO2conc(:,1),Year,CO2conc(:,2),Year,CO2conc(:,3),Year,CO2conc(:,4)), xlabel('year'), ylabel('parts per million by volume'), title('Carbon dioxide concentration')
-subplot(2,6,7), plot(Year,atmtemp(:,1),Year,atmtemp(:,2),Year,atmtemp(:,3),Year,atmtemp(:,4)), xlabel('year'), ylabel('degree Celsius'), title('Temperature')
-subplot(2,6,8), plot(Year,impact(1,:,1),Year,impact(1,:,2),Year,impact(1,:,3),Year,impact(1,:,4),Year,imptot(1,:,1),Year,imptot(1,:,2),Year,imptot(1,:,3),Year,imptot(1,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Tol')
-subplot(2,6,9), plot(Year,impact(2,:,1),Year,impact(2,:,2),Year,impact(2,:,3),Year,impact(2,:,4),Year,imptot(2,:,1),Year,imptot(2,:,2),Year,imptot(2,:,3),Year,imptot(2,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Weitzman')
-subplot(2,6,10), plot(Year,impact(3,:,1),Year,impact(3,:,2),Year,impact(3,:,3),Year,impact(3,:,4),Year,imptot(3,:,1),Year,imptot(3,:,2),Year,imptot(3,:,3),Year,imptot(3,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Nordhaus')
-subplot(2,6,11), plot(Year,impact(4,:,1),Year,impact(4,:,2),Year,impact(4,:,3),Year,impact(4,:,4),Year,imptot(4,:,1),Year,imptot(4,:,2),Year,imptot(4,:,3),Year,imptot(4,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Hope')
-subplot(2,6,12), plot(Year,impact(5,:,1),Year,impact(5,:,2),Year,impact(5,:,3),Year,impact(5,:,4),Year,imptot(5,:,1),Year,imptot(5,:,2),Year,imptot(5,:,3),Year,imptot(5,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to van der Ploeg')
+[YpC2010s Index] = sort(YpCCtr(:,NHistYear,1));
+YpC2100s = YpCCtr(:,NYear,1);
+YpC2100s = YpC2100s(Index);
+Imp1s = squeeze(impctr(1,:,NYear,1));
+Imp2s = squeeze(impctr(2,:,NYear,1));
+Imp3s = squeeze(impctr(3,:,NYear,1));
+Imp4s = squeeze(impctr(4,:,NYear,1));
+Imp5s = squeeze(impctr(5,:,NYear,1));
+Imp1s = Imp1s(Index);
+Imp2s = Imp2s(Index);
+Imp3s = Imp3s(Index);
+Imp4s = Imp4s(Index);
+Imp5s = Imp5s(Index);
+SCC1 = squeeze(SCCc(1,:,1,4,2));
+SCC2 = squeeze(SCCc(2,:,1,4,2));
+SCC3 = squeeze(SCCc(3,:,1,4,2));
+SCC4 = squeeze(SCCc(4,:,1,4,2));
+SCC5 = squeeze(SCCc(5,:,1,4,2));
+SCC1 = SCC1(Index);
+SCC2 = SCC2(Index);
+SCC3 = SCC3(Index);
+SCC4 = SCC4(Index);
+SCC5 = SCC5(Index);
 
+subplot(4,6,1), plot(Year,Population(:,1),Year,Population(:,2),Year,Population(:,3),Year,Population(:,4)), xlabel('year'), ylabel('number of people'), title('Population')
+subplot(4,6,2), plot(Year,YpC(:,1),Year,YpC(:,2),Year,YpC(:,3),Year,YpC(:,4)), xlabel('year'), ylabel('dollar per person per year'), title('Average income')
+subplot(4,6,3), plot(Year,EnInt(:,1)*10^12,Year,EnInt(:,2)*10^12,Year,EnInt(:,3)*10^12,Year,EnInt(:,4)*10^12), xlabel('year'), ylabel('gram oil equivalent per dollar'), title('Energy intensity')
+subplot(4,6,4), plot(Year,CO2Int(:,1),Year,CO2Int(:,2),Year,CO2Int(:,3),Year,CO2Int(:,4)), xlabel('year'), ylabel('gram carbon per gram oil equivalent'), title('Carbon intensity')
+subplot(4,6,5), plot(Year,CO2emit(:,1)/1000,Year,CO2emit(:,2)/1000,Year,CO2emit(:,3)/1000,Year,CO2emit(:,4)/1000), xlabel('year'), ylabel('billion tonnes of carbon'), title('Carbon dioxide emissions')
+subplot(4,6,6), plot(Year,CO2conc(:,1),Year,CO2conc(:,2),Year,CO2conc(:,3),Year,CO2conc(:,4)), xlabel('year'), ylabel('parts per million by volume'), title('Carbon dioxide concentration')
+subplot(4,6,7), plot(Year,atmtemp(:,1),Year,atmtemp(:,2),Year,atmtemp(:,3),Year,atmtemp(:,4)), xlabel('year'), ylabel('degree Celsius'), title('Temperature')
+subplot(4,6,8), plot(Year,impact(1,:,1),Year,impact(1,:,2),Year,impact(1,:,3),Year,impact(1,:,4),Year,imptot(1,:,1),Year,imptot(1,:,2),Year,imptot(1,:,3),Year,imptot(1,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Tol')
+subplot(4,6,9), plot(Year,impact(2,:,1),Year,impact(2,:,2),Year,impact(2,:,3),Year,impact(2,:,4),Year,imptot(2,:,1),Year,imptot(2,:,2),Year,imptot(2,:,3),Year,imptot(2,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Weitzman')
+subplot(4,6,10), plot(Year,impact(3,:,1),Year,impact(3,:,2),Year,impact(3,:,3),Year,impact(3,:,4),Year,imptot(3,:,1),Year,imptot(3,:,2),Year,imptot(3,:,3),Year,imptot(3,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Nordhaus')
+subplot(4,6,11), plot(Year,impact(4,:,1),Year,impact(4,:,2),Year,impact(4,:,3),Year,impact(4,:,4),Year,imptot(4,:,1),Year,imptot(4,:,2),Year,imptot(4,:,3),Year,imptot(4,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to Hope')
+subplot(4,6,12), plot(Year,impact(5,:,1),Year,impact(5,:,2),Year,impact(5,:,3),Year,impact(5,:,4),Year,imptot(5,:,1),Year,imptot(5,:,2),Year,imptot(5,:,3),Year,imptot(5,:,4)), xlabel('year'), ylabel('percent income'), title('Impact according to van der Ploeg')
+subplot(4,6,13),bar(YpC2010s)
+subplot(4,6,14),bar(Imp1s)
+subplot(4,6,15),bar(Imp2s)
+subplot(4,6,16),bar(Imp3s)
+subplot(4,6,17),bar(Imp4s)
+subplot(4,6,18),bar(Imp5s)
+subplot(4,6,19),bar(YpC2100s)
+subplot(4,6,20),bar(SCC1)
+subplot(4,6,21),bar(SCC2)
+subplot(4,6,22),bar(SCC3)
+subplot(4,6,23),bar(SCC4)
+subplot(4,6,24),bar(SCC5)
