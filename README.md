@@ -1,8 +1,10 @@
-Matlab code for FUND 4.0 MN
+Matlab code for FUND 4.1 MN
 
 FUND is the Climate Framework for Uncertainty, Negotiation and Distribution
 
 To run the model, type FUND
+
+May 17, 2018: added SSP scenarios, new impact modules
 
 September 24, 2014: nationalised total and marginal impact of climate change
 
