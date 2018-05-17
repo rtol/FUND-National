@@ -1,11 +1,11 @@
 %initKaya
 %The Climate Framework for Uncertainty, Negotiation and Distribution,
-%version 4.0-matlab-national
+%version 4.1-matlab-national
 %
-%This script is part of FUND 4.0 MN
+%This script is part of FUND 4.1 MN
 %It initializes variables and sets parameters
 %
-%Richard Tol, 2 September 2014
+%Richard Tol, 14 May 2018
 %This code is protected by the MIT License
 
 %% global
@@ -44,11 +44,17 @@ CO2emit(1,1) = CO2Int(1,1)*Energy(1,1);
 
 for t=NHistYear+1:NYear
     ts = t-NHistYear;
-    for s=1:NScen
+    for s=1:NSRES
         Population(t,s) = (1+SRESdPop(s,ts))*Population(t-1,s);
         TFP(t,s) = (1+SRESdInc(s,ts))*TFP(t-1,s);
         EnInt(t,s)= (1+SRESdEnInt(s,ts))*EnInt(t-1,s);
         CO2Int(t,s)= (1+SRESdCO2Int(s,ts))*CO2Int(t-1,s);
+    end
+    for s=NSRES+1:NScen
+        Population(t,s) = (1+SSPdPop(s-NSRES,ts))*Population(t-1,s);
+        TFP(t,s) = (1+SSPdInc(s-NSRES,ts))*TFP(t-1,s);
+        EnInt(t,s)= (1+SSPdEnInt(s-NSRES,ts))*EnInt(t-1,s);
+        CO2Int(t,s)= (1+SSPdCO2Int(s-NSRES,ts))*CO2Int(t-1,s);
     end
 end
 
@@ -114,12 +120,22 @@ fudgey(1) = 0.84; %these fudge factors ensure that global growth equals aggregat
 fudgey(2) = 0.67; %the two diverge because capital deepening is non-linear and favours poor countries
 fudgey(3) = 0.81; %these fudge factors are set by hand at the moment
 fudgey(4) = 0.72; %this will need to change in the future
+fudgey(5) = 0.61;
+fudgey(6) = 0.60;
+fudgey(7) = 0.61;
+fudgey(8) = 0.61;
+fudgey(9) = 0.60;
 
 for t=NHistYear+1:NYear
     ts = t-NHistYear;
-    for s=1:NScen
+    for s=1:NSRES
         for c = 1:NCountry
             TFPCtr(c,t,s) =  (1+fudgey(s)*SRESdInc(s,ts))*TFPCtr(c,t-1,s);
+        end
+    end
+    for s=NSRES+1:NScen
+        for c = 1:NCountry
+            TFPCtr(c,t,s) =  (1+fudgey(s)*SSPdInc(s-NSRES,ts))*TFPCtr(c,t-1,s);
         end
     end
 end
@@ -190,11 +206,20 @@ fudgee(1) = 1.18; %these fudge factors ensure that global growth equals aggregat
 fudgee(2) = 1.30; %the two diverge because growth is concentrated in energy-intensive economies
 fudgee(3) = 1.11; %these fudge factors are set by hand at the moment
 fudgee(4) = 1.25; %this will need to change in the future
+fudgee(5) = 1.34;
+fudgee(6) = 1.17;
+fudgee(7) = 0.72;
+fudgee(8) = 0.93;
+fudgee(9) = 1.77;
 
 for t=NHistYear+1:NYear
     ts = t-NHistYear;
-    for s=1:NScen
+    for s=1:NSRES
         EnIntCtr(:,t,s)= (1+fudgee(s)*SRESdEnInt(s,ts))*EnIntCtr(:,t-1,s);
         CO2IntCtr(:,t,s)= (1+SRESdCO2Int(s,ts))*CO2IntCtr(:,t-1,s);
+    end
+    for s=NSRES+1:NScen
+        EnIntCtr(:,t,s)= (1+fudgee(s)*SSPdEnInt(s-NSRES,ts))*EnIntCtr(:,t-1,s);
+        CO2IntCtr(:,t,s)= (1+SSPdCO2Int(s-NSRES,ts))*CO2IntCtr(:,t-1,s);
     end
 end

@@ -2,10 +2,10 @@
 %The Climate Framework for Uncertainty, Negotiation and Distribution,
 %version 4.0-matlab-national
 %
-%This script is part of FUND 4.0 MN
+%This script is part of FUND 4.1 MN
 %It initializes variables and sets parameters
 %
-%Richard Tol, 29 August 2014
+%Richard Tol, 10 April 2018
 %This code is protected by the MIT License
 
 clear all
@@ -23,4 +23,6 @@ for t=2:NYear,
     Year(t) = Year(t-1) + 1;
 end
 
-NScen = 4;
+NSRES = 4;
+NSSP = 5;
+NScen = NSRES+NSSP;

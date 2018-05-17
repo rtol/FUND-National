@@ -88,7 +88,7 @@ STpar(4) = 0.00568;
 %impact
 global NImpact impincelas
 
-NImpact = 5;
+NImpact = 8;
 impincelas = -0.36;
 
 %scenario

@@ -8,7 +8,7 @@
 %Richard Tol, 6 August 2014
 %This code is protected by the MIT License
 
- global YpC2010
+global YpC2010
 
 YpC2010 = histYpC(NHistYear);
 
