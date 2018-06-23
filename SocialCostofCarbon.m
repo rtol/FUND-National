@@ -50,15 +50,15 @@ dfc = zeros(NCountry,NYear,NScen,NDR,NRA);
 for s=1:NScen,
     for p=1:NDR,
         for r=1:NRA,
-            df(265,s,p,r) = 1;
+            df(SCCYear,s,p,r) = 1;
             for c=1:NCountry
-                dfc(c,265,s,p,r) = 1;
+                dfc(c,SCCYear,s,p,r) = 1;
             end
         end
     end
 end
 
-for t=266:NYear,
+for t=SCCYear+1:NYear,
     for s=1:NScen,
         for p=1:NDR,
             for r=1:NRA
@@ -100,7 +100,8 @@ s.addRow(num2str(PRTP(5),5),num2str(SCC(1,1,5,1),7),num2str(SCC(1,1,5,2),7),num2
 s.addRow(num2str(PRTP(6),5),num2str(SCC(1,1,6,1),7),num2str(SCC(1,1,6,2),7),num2str(SCC(1,1,6,3),7),num2str(SCC(1,1,6,4),7),num2str(SCC(1,1,6,5),7));
 disp('Social cost of carbon ($/tC)')
 disp('alternative rates of time preference (rows) and risk aversion (columns)')
-disp('model = Tol, scenario = SRES A1')
+str = ['model = Tol, scenario = SRES A1 ' num2str(SCCYear+StartYear)];
+disp(str)
 s.display
 
 line = sprintf('\n');
@@ -118,5 +119,6 @@ t.addRow('Golosov',num2str(SCC(7,1,4,2),7),num2str(SCC(7,2,4,2),7),num2str(SCC(7
 t.addRow('Tol2 (piecewise linear)',num2str(SCC(8,1,4,2),7),num2str(SCC(8,2,4,2),7),num2str(SCC(8,3,4,2),7),num2str(SCC(8,4,4,2),7),num2str(SCC(8,5,4,2),7),num2str(SCC(8,6,4,2),7),num2str(SCC(8,7,4,2),7),num2str(SCC(8,8,4,2),7),num2str(SCC(8,9,4,2),7));
 disp('Social cost of carbon ($/tC)')
 disp('alternative impact models (rows) and scenarios (columns)')
-disp('pure rate of time preference = 0.03; rate of risk aversion = 1')
+str = ['pure rate of time preference = 0.03; rate of risk aversion = 1 ' num2str(SCCYear+StartYear)];
+disp(str)
 t.display

@@ -15,9 +15,64 @@ InitModules
 Calibration
 
 for t=2:NHistYear
+     if t == SCCYear
+        [MRHbox(t,1,:), CO2conc(t,1), pH(t,1)] = stepCO2(MRHbox(t-1,1,:),historicCO2emit(t-1)+1,historicLUemit(t-1));
+     else
+        [MRHbox(t,1,:), CO2conc(t,1), pH(t,1)] = stepCO2(MRHbox(t-1,1,:),historicCO2emit(t-1),historicLUemit(t-1));
+     end
+     [CH4conc(t,1), N2Oconc(t,1), SF6conc(t,1), CFC11conc(t,1), CFC12conc(t,1)] = stepGHG(CH4conc(t-1,1),historicCH4emit(t-1),N2Oconc(t-1,1),historicN2Oemit(t-1),SF6conc(t-1,1),historicSF6emit(t-1),CFC11conc(t-1,1),histCFC11emit(t-1),CFC12conc(t-1,1),histCFC12emit(t-1));
+     [RadForc(t,1),atmtemp(t,1), oceantemp(t,1),SLR(t,1)] = stepClimate(CO2conc(t,1),CH4conc(t,1),N2Oconc(t,1),SF6conc(t,1),CFC11conc(t,1),CFC12conc(t,1),Semit(t,1),trO3radforc(t,1),atmtemp(t-1,1),oceantemp(t-1,1));
+     [K(t,1),Y(t,1),Energy(t,1),CO2emit(t,1)] = stepEconomy(K(t-1,1),Y(t-1,1),TFP(t,1),histPopulation(t),EnInt(t,1),CO2Int(t,1));
+     impactd(:,t,1) = aggimpact(atmtemp(t,1),imppar,Y(t,1),Population(t,1),YpC2010);
+     for c=1:NCountry
+            impctrd(:,c,t,1) = aggimpact(atmtemp(t,1),squeeze(ctrimppar(:,c,:)),YCtr(c,t,1),PopCtr(c,t,1),YpC2010Ctr(c));
+     end
+end
+
+for s=2:NScen
+    MRHbox(:,s,:) = MRHbox(:,1,:);
+    CO2conc(:,s) = CO2conc(:,1);
+    CH4conc(:,s) = CH4conc(:,1);
+    N2Oconc(:,s) = N2Oconc(:,1);
+    SF6conc(:,s) = SF6conc(:,1);
+    CFC11conc(:,s) = CFC11conc(:,1);
+    CFC12conc(:,s) = CFC12conc(:,1);
+    pH(:,s) = pH(:,1);
+    RadForc(:,s) = RadForc(:,1);
+    atmtemp(:,s) = atmtemp(:,1);
+    oceantemp(:,s) = oceantemp(:,1);
+    SLR(:,s) = SLR(:,1);
+    K(:,s) = K(:,1);
+    Y(:,s) = Y(:,1);
+    Energy(:,s) = Energy(:,1);
+    CO2emit(:,s) = CO2emit(:,1);
+    impactd(:,:,s) = impactd(:,:,1);
+    impctrd(:,:,:,s) = impctrd(:,:,:,1);
+end
+
+for t=NHistYear+1:NYear
+    for s=1:NScen
+        if t == SCCYear
+            [MRHbox(t,s,:), CO2conc(t,s), pH(t,s)]= stepCO2(MRHbox(t-1,s,:),CO2emit(t-1,s)+1,LUemit(t-1,s));
+        else
+            [MRHbox(t,s,:), CO2conc(t,s), pH(t,s)]= stepCO2(MRHbox(t-1,s,:),CO2emit(t-1,s),LUemit(t-1,s));
+        end
+        [CH4conc(t,s), N2Oconc(t,s), SF6conc(t,s),CFC11conc(t,s),CFC12conc(t,s)] = stepGHG(CH4conc(t-1,s),CH4emit(t-1,s),N2Oconc(t-1,s),N2Oemit(t-1,s),SF6conc(t-1,s),SF6emit(t-1,s),CFC11conc(t-1,s),CFC11emit(t-1,s),CFC12conc(t-1,s),CFC12emit(t-1,s));
+        [RadForc(t,s),atmtemp(t,s),oceantemp(t,s),SLR(t,s)] = stepClimate(CO2conc(t,s),CH4conc(t,s),N2Oconc(t,s),SF6conc(t,s),CFC11conc(t,s),CFC12conc(t,s),Semit(t,s),trO3radforc(t,s),atmtemp(t-1,s),oceantemp(t-1,s));
+        [K(t,s),Y(t,s),Energy(t,s),CO2emit(t,s)]= stepEconomy(K(t-1,s),Y(t-1,s),TFP(t,s),Population(t,s),EnInt(t,s),CO2Int(t,s));
+        for c=1:NCountry
+             [KCtr(c,t,s),YCtr(c,t,s),EnergyCtr(c,t,s),CO2Ctr(c,t,s)]= stepEconomy(KCtr(c,t-1,s),YCtr(c,t-1,s),TFPCtr(c,t,s),PopCtr(c,t,s),EnIntCtr(c,t,s),CO2IntCtr(c,t,s));
+        end
+        impactd(:,t,s) = aggimpact(atmtemp(t,s),imppar,Y(t,s),Population(t,s),YpC2010);
+        for c=1:NCountry
+            impctrd(:,c,t,s) = aggimpact(atmtemp(t,s),squeeze(ctrimppar(:,c,:)),YCtr(c,t,s),PopCtr(c,t,s),YpC2010Ctr(c));
+        end
+    end
+end
+
+for t=2:NHistYear
      [MRHbox(t,1,:), CO2conc(t,1), pH(t,1)] = stepCO2(MRHbox(t-1,1,:),historicCO2emit(t-1),historicLUemit(t-1));
      [CH4conc(t,1), N2Oconc(t,1), SF6conc(t,1), CFC11conc(t,1), CFC12conc(t,1)] = stepGHG(CH4conc(t-1,1),historicCH4emit(t-1),N2Oconc(t-1,1),historicN2Oemit(t-1),SF6conc(t-1,1),historicSF6emit(t-1),CFC11conc(t-1,1),histCFC11emit(t-1),CFC12conc(t-1,1),histCFC12emit(t-1));
-     CFC12conc(t,1) = (1-CFC12life)*CFC12conc(t-1,1) + histCFC12emit(t-1);
      [RadForc(t,1),atmtemp(t,1), oceantemp(t,1),SLR(t,1)] = stepClimate(CO2conc(t,1),CH4conc(t,1),N2Oconc(t,1),SF6conc(t,1),CFC11conc(t,1),CFC12conc(t,1),Semit(t,1),trO3radforc(t,1),atmtemp(t-1,1),oceantemp(t-1,1));
      [K(t,1),Y(t,1),Energy(t,1),CO2emit(t,1)] = stepEconomy(K(t-1,1),Y(t-1,1),TFP(t,1),histPopulation(t),EnInt(t,1),CO2Int(t,1));
      impact(:,t,1) = aggimpact(atmtemp(t,1),imppar,Y(t,1),Population(t,1),YpC2010);
@@ -45,28 +100,6 @@ for s=2:NScen
     CO2emit(:,s) = CO2emit(:,1);
     impact(:,:,s) = impact(:,:,1);
     impctr(:,:,:,s) = impctr(:,:,:,1);
-end
-
-impactd = impact;
-
-for t=NHistYear+1:NYear
-    for s=1:NScen
-        if t == 265
-            [MRHbox(t,s,:), CO2conc(t,s), pH(t,s)]= stepCO2(MRHbox(t-1,s,:),CO2emit(t-1,s)+1,LUemit(t-1,s));
-        else
-            [MRHbox(t,s,:), CO2conc(t,s), pH(t,s)]= stepCO2(MRHbox(t-1,s,:),CO2emit(t-1,s),LUemit(t-1,s));
-        end
-        [CH4conc(t,s), N2Oconc(t,s), SF6conc(t,s),CFC11conc(t,s),CFC12conc(t,s)] = stepGHG(CH4conc(t-1,s),CH4emit(t-1,s),N2Oconc(t-1,s),N2Oemit(t-1,s),SF6conc(t-1,s),SF6emit(t-1,s),CFC11conc(t-1,s),CFC11emit(t-1,s),CFC12conc(t-1,s),CFC12emit(t-1,s));
-        [RadForc(t,s),atmtemp(t,s),oceantemp(t,s),SLR(t,s)] = stepClimate(CO2conc(t,s),CH4conc(t,s),N2Oconc(t,s),SF6conc(t,s),CFC11conc(t,s),CFC12conc(t,s),Semit(t,s),trO3radforc(t,s),atmtemp(t-1,s),oceantemp(t-1,s));
-        [K(t,s),Y(t,s),Energy(t,s),CO2emit(t,s)]= stepEconomy(K(t-1,s),Y(t-1,s),TFP(t,s),Population(t,s),EnInt(t,s),CO2Int(t,s));
-        for c=1:NCountry
-             [KCtr(c,t,s),YCtr(c,t,s),EnergyCtr(c,t,s),CO2Ctr(c,t,s)]= stepEconomy(KCtr(c,t-1,s),YCtr(c,t-1,s),TFPCtr(c,t,s),PopCtr(c,t,s),EnIntCtr(c,t,s),CO2IntCtr(c,t,s));
-        end
-        impactd(:,t,s) = aggimpact(atmtemp(t,s),imppar,Y(t,s),Population(t,s),YpC2010);
-        for c=1:NCountry
-            impctrd(:,c,t,s) = aggimpact(atmtemp(t,s),squeeze(ctrimppar(:,c,:)),YCtr(c,t,s),PopCtr(c,t,s),YpC2010Ctr(c));
-        end
-    end
 end
 
 for t=NHistYear+1:NYear

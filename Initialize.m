@@ -15,6 +15,8 @@ StartYear = 1750;
 EndHistYear = 2010;
 NHistYear = EndHistYear - StartYear + 1;
 
+SCCYear = 2015 - StartYear;
+
 EndYear = 2100;
 NYear = EndYear - StartYear + 1;
 Year = zeros(NYear,1);
