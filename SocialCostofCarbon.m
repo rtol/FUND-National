@@ -44,8 +44,11 @@ NDR = 6;
 PRTP = [0.001 0.010 0.020 0.030 0.040 0.050];
 NRA = 5;
 RA = [0.5 1.0 1.5 2.0 2.5];
+NCDR = 4;
+DR = [0.070 0.0545 0.030 0.025];
 
 df = zeros(NYear,NScen,NDR,NRA);
+df2 = zeros(NYear,NCDR);
 dfc = zeros(NCountry,NYear,NScen,NDR,NRA);
 for s=1:NScen,
     for p=1:NDR,
@@ -56,6 +59,9 @@ for s=1:NScen,
             end
         end
     end
+end
+for r=1:NCDR,
+    df2(SCCYear,r) = 1;
 end
 
 for t=SCCYear+1:NYear,
@@ -69,10 +75,15 @@ for t=SCCYear+1:NYear,
             end
         end
     end
+    for r=1:NCDR
+        df2(t,r) = df2(t-1,r)/(1+DR(r));
+    end
 end
 
 SCC = zeros(NImpact, NScen, NDR, NRA);
+SCC2 = zeros(NImpact, NScen, NCDR);
 SCCc = zeros(NImpact, NCountry, NScen, NDR, NRA);
+SCCc2 = zeros(NImpact, NCountry, NScen, NCDR);
 
 for i=1:NImpact,
     for s=1:NScen,
@@ -84,11 +95,19 @@ for i=1:NImpact,
                 end
             end
         end
+        for p=1:NCDR,
+            SCC2(i,s,p) = df2(:,p)'*dimpabs(i,:,s)';
+            for c=1:NCountry
+                SCCc2(i,c,s,p) = df2(:,p)'*squeeze(dimpabsctr(i,c,:,s));
+            end
+        end
     end
 end
 
 SCC = -0.01*SCC/1000000;
 SCCc = -0.01*SCCc/1000000;
+SCC2 = -0.01*SCC2/1000000;
+SCCc2 = -0.01*SCCc2/1000000;
 
 s = PrintTable;
 s.addRow('Time pref \ Risk aversion', RA(1), RA(2), RA(3), RA(4), RA(5));
