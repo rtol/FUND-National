@@ -4,6 +4,8 @@ FUND is the Climate Framework for Uncertainty, Negotiation and Distribution
 
 To run the model, type FUND
 
+January 6, 2019: Bugs removed in data and code; alternative calibrations added
+
 June 2, 2018: Now with constant consumption discount rates
 
 May 17, 2018: added SSP scenarios, new impact modules
