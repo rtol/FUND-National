@@ -27,8 +27,10 @@ histO3radforc = csvread('histO3radforc.csv');
 historicSemit = csvread('histSemit.csv');
 
 historicTemp = csvread('histTemp.csv');
+NatTemp = csvread('NationalTemperature.csv');
 
 observedImpact = csvread('TotalImpact.csv');
+observedNatImp = csvread('NationalImpact.csv');
 
 histPopulation = csvread('histPopulation.csv');   %global population, 1750-2010
 histGDP = csvread('histGDP.csv');
