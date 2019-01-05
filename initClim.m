@@ -15,5 +15,3 @@ SLR = zeros(NYear,NScen);
 atmtemp(1,1) = atmtemp0;
 oceantemp(1,1) = oceantemp0;
 SLR(1,1) = 0;
-
-

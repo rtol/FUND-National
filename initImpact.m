@@ -16,6 +16,3 @@ impact = zeros(NImpact,NYear,NScen);
 impactd = zeros(NImpact,NYear,NScen);
 impctr = zeros(NImpact,NCountry,NYear,NScen);
 impctrd = zeros(NImpact,NCountry,NYear,NScen);
-
-
-

@@ -13,7 +13,7 @@ global impincelas NImpact
 
 aggimp(1) = par(1,1)*temp + par(1,2)*temp.^2;
 aggimp(2) = par(2,1)*temp.^2 + par(2,2)*temp.^6;
-aggimp(3) = par(3,1)*temp.^2 + par(3,2)*temp.^6;
+aggimp(3) = par(3,1)*temp.^2 + par(3,2)*temp.^7;
 aggimp(4) = par(4,1)*temp.^2;
 aggimp(5) = par(5,1)*temp;
 aggimp(6) = par(6,1)*(exp(temp)-1);

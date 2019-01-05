@@ -89,7 +89,22 @@ STpar(4) = 0.00568;
 global NImpact impincelas
 
 NImpact = 8;
-impincelas = -0.36;
+%impincelas = -0.18;
+%impincelas = -0.36;
+%impincelas = -0.72;
+
+%impincelas =  0.00;
+%impincelas = -0.08;
+%impincelas = -0.42;
+%impincelas = -0.84;
+%impincelas = -0.88;
+%impincelas = -0.99;
+%impincelas = -1.00;
+%impincelas = -1.01;
+impincelas = -1.68;
+%impincelas = -2.48;
+%impincelas = -3.28;
+%impincelas = -3.36;
 
 %scenario
 global LabourElast Depreciation SavingsRate

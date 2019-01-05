@@ -10,6 +10,8 @@
 
 clear all
 
+convergence = true;
+
 StartYear = 1750;
 
 EndHistYear = 2010;

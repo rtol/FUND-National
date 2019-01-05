@@ -22,4 +22,9 @@ while abs(atmtemp(NHistYear,1)-AtmTemp2010) > 0.01,
          end
 end
 
+%STpar(1) = STpar(1)*0.5/3.0;
+%STpar(1) = STpar(1)*1.5/3.0;
+%STpar(1) = STpar(1)*2.5/3.0;
+%STpar(1) = STpar(1)*4.5/3.0;
+%STpar(1) = STpar(1)*6.0/3.0;
 ClimSens = STpar(1)*CO2RF*log(2);
